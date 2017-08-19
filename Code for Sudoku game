@@ -1,0 +1,247 @@
+#include <iostream>
+#include <fstream>
+#include <ctime>
+#include <cstdlib>
+
+using namespace std;
+void sudokuGame();
+
+int main()
+{
+
+    sudokuGame();
+
+    return 0;
+}
+
+void sudokuGame(){
+
+    ifstream read("Sudoku_sets.txt");
+    string setNumber;
+    srand(time(0));
+    int x  = (rand()%49)+1;
+    int playerDesk[9][9];
+    bool initialNumber[9][9];
+    bool endOfTheGame;
+
+    //Random set selection starts:
+
+  for(int a = 1;a <= 50;a++){
+
+    if(a == x){
+
+        getline(read,setNumber);
+
+        for(int y = 1;y <= 9;y++){
+
+            int row;
+
+            read >> row;
+
+            for(int z = 8;z >= 0;z--){
+
+                playerDesk[y-1][z]=row % 10;
+                row /= 10;
+
+            }
+        }
+    }
+
+    else{
+
+        for(int k = 0;k <=9;k++){
+
+        string trash;
+        getline(read,trash);
+
+        }
+    }
+  }
+
+  //End of random set selection
+
+  //Initial numbers initialization starts:
+
+  for(int m = 0;m < 9;m++){
+
+        for(int n = 0;n < 9;n++){
+
+            if(playerDesk[m][n] != 0){
+                initialNumber[m][n] = true;
+            }
+            else{
+                initialNumber[m][n] = false;
+            }
+        }
+  }
+
+  //end of initialization
+
+  //Game building starts
+
+do{
+
+  cout << setNumber << endl;
+
+  for(int a = 0; a < 9; a++){
+
+    for(int b = 0;b < 9;b++){
+
+            if(b == 2 || b == 5){
+                cout << playerDesk[a][b] << "  ";
+            }
+            else{
+                cout << playerDesk[a][b] << " ";
+            }
+    }
+
+    if(a == 2 || a == 5){
+        cout << endl << endl;
+    }
+    else{
+        cout << endl;
+    }
+  }
+
+  string command;
+  int value;
+  int row;
+  int column;
+
+  cout << endl << "Put the command:";
+  cin >> command;
+
+  if(command == "play"){
+
+    cout<< "Put the value row and column:";
+    cin >> value >> row >> column;
+
+    if(playerDesk[row-1][column-1] == 0){
+        playerDesk[row-1][column-1] = value;
+    }
+    else if(playerDesk[row-1][column-1] != 0 && initialNumber[row][column] == true){
+        playerDesk[row-1][column-1] = value;
+    }
+    else if(playerDesk[row-1][column-1] != 0 && initialNumber[row][column] == false){
+        cout << "This cell is initial, or your input is incorrect, try again."<< endl;
+    }
+    else if(value > 9 || row > 9 || column > 9 || value < 1 || row < 1 || column < 1){
+        cout << "This cell is initial, or your input is incorrect, try again."<< endl;
+    }
+  }
+
+  else if(command == "clean"){
+
+    cout << "Put the row and column:";
+    cin >> row >> column;
+
+    if(playerDesk[row-1][column-1] != 0 && initialNumber[row-1][column-1] == false){
+        playerDesk[row-1][column-1] = 0;
+    }
+    else if(playerDesk[row-1][column-1] != 0 && initialNumber[row-1][column-1] == true){
+        cout << "You cant delete the initial number."<< endl;
+    }
+    else if(playerDesk[row-1][column-1] == 0){
+        cout << "The cells is already empty."<< endl;
+    }
+
+  }
+
+    else{
+        cout << "Wrong command try again."<< endl;
+    }
+
+    endOfTheGame = true;
+
+    for(int o = 0;o < 9;o++){
+
+        for(int p = 0;p < 9;p++){
+
+            if(playerDesk[o][p] == 0){
+                endOfTheGame = false;
+            }
+        }
+    }
+
+
+
+ }while(endOfTheGame == false);
+
+ //End of game building
+
+
+     cout << setNumber << endl;
+
+    for(int a = 0; a < 9; a++){
+
+        for(int b = 0;b < 9;b++){
+
+                if(b == 2 || b == 5){
+                    cout << playerDesk[a][b] << "  ";
+                }
+                else{
+                    cout << playerDesk[a][b] << " ";
+                }
+        }
+
+        if(a == 2 || a == 5){
+            cout << endl << endl;
+        }
+        else{
+            cout << endl;
+        }
+    }
+
+    bool win = true;
+
+    //Win checking process stars
+
+    for(int j = 0;j < 9;j++){
+
+        int sumHorizontal = 0;
+        int sumVertical = 0;
+
+        for(int h = 0;h < 9;h++){
+
+            sumHorizontal += playerDesk[j][h];
+            sumVertical += playerDesk[h][j];
+        }
+
+        if(sumHorizontal != 45 || sumVertical != 45){
+            win = false;
+        }
+
+    }
+
+
+
+    for(int q = 0;q < 9;q = q+3){
+
+        for(int w = 0;w < 9;w = w+3){
+
+                int squareSum = 0;
+
+            for(int e = w;e < w+3;e++){
+
+                for(int r = q;r < q+3;r++){
+
+                    squareSum += playerDesk[r][e];
+                }
+            }
+
+            if(squareSum != 45){
+                win = false;
+            }
+        }
+    }
+
+    if(win == false){
+        cout << endl << "You lose, try again.";
+    }
+    else{
+        cout << endl << "Congratulations, you won!";
+    }
+
+    //End of checking process
+
+}
